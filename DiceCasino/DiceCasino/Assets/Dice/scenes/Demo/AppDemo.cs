@@ -127,21 +127,21 @@ public class AppDemo : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {		
 		
-		// if next camera position is set we are , or have to start moving the camera.
-		if (nextCameraPosition!=null)
-			MoveCamera();
+		//// if next camera position is set we are , or have to start moving the camera.
+		//if (nextCameraPosition!=null)
+		//	MoveCamera();
 								
-		switch(mode)
-		{
-			case MODE_GALLERY:
-				// gallery mode to update the gallery
-				UpdateGallery();
-				break;
-			case MODE_ROLL:
-				// rolling mode to update the dice rolling
-				UpdateRoll();
-				break;
-		}
+		//switch(mode)
+		//{
+		//	case MODE_GALLERY:
+		//		// gallery mode to update the gallery
+		//		UpdateGallery();
+		//		break;
+		//	case MODE_ROLL:
+		//		// rolling mode to update the dice rolling
+		//		UpdateRoll();
+		//		break;
+		//}
 	}
 
 	// Moving the camera
@@ -229,33 +229,33 @@ public class AppDemo : MonoBehaviour {
         return Vector3.Lerp(spawnPoint.transform.position, rollTarget, 1).normalized * (-35 - Random.value * 20);
     }
 
-	void UpdateRoll()
-	{
-        spawnPoint = GameObject.Find("spawnPoint");
-        // check if we have to roll dice
-        if (Input.GetMouseButtonDown(Dice.MOUSE_LEFT_BUTTON) && !PointInRect(GuiMousePosition(), rectModeSelect))
-		{
-            // left mouse button clicked so roll random colored dice 2 of each dieType
-            Dice.Clear();
+	//void UpdateRoll()
+	//{
+ //       spawnPoint = GameObject.Find("spawnPoint");
+ //       // check if we have to roll dice
+ //       if (Input.GetMouseButtonDown(Dice.MOUSE_LEFT_BUTTON) && !PointInRect(GuiMousePosition(), rectModeSelect))
+	//	{
+ //           // left mouse button clicked so roll random colored dice 2 of each dieType
+ //           Dice.Clear();
 
-            Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
-            Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
-		}
-        else
-        if (Input.GetMouseButtonDown(Dice.MOUSE_RIGHT_BUTTON) && !PointInRect(GuiMousePosition(), rectModeSelect))
-        {
-            // right mouse button clicked so roll 8 dice of dieType 'gallery die'
-            Dice.Clear();
-            string[] a = galleryDie.Split('-');
-            Dice.Roll("8" + a[0], galleryDie, spawnPoint.transform.position, Force());
-        }
-    }
+ //           Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d10", "d10-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
+ //           Dice.Roll("1d6", "d6-" + randomColor, spawnPoint.transform.position, Force());
+	//	}
+ //       else
+ //       if (Input.GetMouseButtonDown(Dice.MOUSE_RIGHT_BUTTON) && !PointInRect(GuiMousePosition(), rectModeSelect))
+ //       {
+ //           // right mouse button clicked so roll 8 dice of dieType 'gallery die'
+ //           Dice.Clear();
+ //           string[] a = galleryDie.Split('-');
+ //           Dice.Roll("8" + a[0], galleryDie, spawnPoint.transform.position, Force());
+ //       }
+ //   }
 	
     // handle GUI
 	void OnGUI()
@@ -455,7 +455,7 @@ public class AppDemo : MonoBehaviour {
 		if (g!=null)
 		{
             // create the new die
-			galleryDieObject = Dice.prefab(a[0], g.transform.position + new Vector3(0, 3.8F, 0), newRotation , new Vector3(1.4f,1.4f,1.4f),die);
+			galleryDieObject = Dice.prefab(a[0], g.transform.position + new Vector3(0, 3.8F, 0), newRotation , new Vector3(1.4f,1.4f,1.4f)/*,die*/);
             // disable rigidBody gravity
             galleryDieObject.GetComponent<Rigidbody>().useGravity = false;
             // add saved angle and angle velocity or torque impulse
