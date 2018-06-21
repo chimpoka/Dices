@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class Die : MonoBehaviour {
-
+public class Die : MonoBehaviour
+{
 	// «начение на кубике. ≈сли 0, то значение не определено (кубик еще не остановилс€)
 	public int value = 0;	
     // Ќормализованный вектор из центра кубика, направленный вверх. ¬ локальных координатах определ€ет, кака€ сторона выпала
@@ -37,12 +37,12 @@ public class Die : MonoBehaviour {
                 localHitNormalized = transform.InverseTransformPoint(hit.point.x, hit.point.y, hit.point.z).normalized;
                 return true;
             }
-			// ¬ теории этого никогда не случитс€
+			// ¬ теории до этого места не доходим
             return false;
         }
     }
 
-	// —читает значение на кубике
+	// —читает значение, выпавшее на кубике
     private void GetValue()
     {
 		// value = 0 -> неопределенное значение
@@ -73,13 +73,13 @@ public class Die : MonoBehaviour {
                 }
             }
             side++;
-            // ≈сли то мы проверили все стороны, то (testHitVector == Vector3.zero)
+            // ≈сли мы проверили все стороны, то (testHitVector == Vector3.zero)
         } while (testHitVector != Vector3.zero);
     }
 
     private void Update()
     {
-        // —читаем значение кубика если но на поверхности и не движетс€
+        // —читаем значение кубика, если он на поверхности и не движетс€
         if (onGround && !rolling && localHit)
             GetValue();
     }
@@ -108,7 +108,7 @@ public class Die : MonoBehaviour {
         return Vector3.zero;
     }
 
-    // ѕроверка коллайдера кубика на столкновение с коллайдером поверности
+    // ѕроверка кубика на столкновение с поверностью
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.name == "Table")

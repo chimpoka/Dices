@@ -8,15 +8,19 @@ public enum Winner { Player1, Player2, Draw }
 
 public class Controller : MonoBehaviour
 {
+    // Список игроков (необходимо в редакторе заполнить параметры: Dice Prefab, Spawn Transform, Force)
     public List<Player> players;
+    // Стадия игры (Стартовое окно, таймер ставок, сама игра, таймер результатов)
     public static GameMode mode;
+    // Победитель (игрок 1, игрок 2, ничья)
     public static Winner winner;
-    public int diceNumberPerOneRoll;
+    // Количество бросаемых кубиков за 1 бросок
+    public int diceNumberPerOneRoll = 2;
 
-    private float betsTimer;
-    private float resultTimer; 
+    // Количество сделанных бросков кубиков за раунд
     private int rollCount = 0;
 
+    // Создание синглтона
     private static Controller instance = null;
 
     public static Controller Instance
@@ -40,28 +44,34 @@ public class Controller : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+
+
     void Update()
     {
         if (mode == GameMode.Game)
         {
             if (rollCount == 0)
             {
+                // Если еще не был совершен бросок, то первый игрок бросает diceNumberPerOneRoll кубиков
                 players[0].Roll(diceNumberPerOneRoll);
                 rollCount++;
             }
-            else if (players[0].IsDiceStopped() && rollCount == 1)
+            else if (players[0].IsEndTurn() && rollCount == 1)
             {
+                // Если совершен 1 бросок, то второй игрок бросает diceNumberPerOneRoll кубиков
                 players[1].Roll(diceNumberPerOneRoll);
                 rollCount++;
             }
-            else if (players[1].IsDiceStopped() && rollCount == 2)
+            else if (players[1].IsEndTurn() && rollCount == 2)
             {
+                // Если совершено 2 броска, то показываем результаты
                 ShowResult();                
                 rollCount = 0;
             }           
         }
     }
 
+    // Определение побелителя
     public static void FindWinner(int valuePlayer1, int valuePlayer2)
     {       
         if (valuePlayer1 > valuePlayer2)
@@ -72,9 +82,12 @@ public class Controller : MonoBehaviour
             winner = Winner.Draw;
     }
 
+    // Показ результатов
     public void ShowResult()
     {
+        // Добавление результатов в таблицу
         HUD.Instance.AddNewResult(players[0].value, players[1].value);
+        // Показ таймера после игры
         HUD.Instance.ShowResultWindow();
     }
 
