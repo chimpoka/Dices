@@ -8,75 +8,55 @@ public enum Winner { Player1, Player2, Draw }
 
 public class Controller : MonoBehaviour
 {
-    public static List<Player> players;
-
-    //public Transform spawnPoint1;
-    //public Transform spawnPoint2;
-    //public Vector3 force1;
-   // public Vector3 force2;
-    
-    //public GameObject dicePrefab1;
-    //public GameObject dicePrefab2;
-    // public int rollTime;
-    //public static int ValuePlayer1;
-    //public static int ValuePlayer2;
-
+    public List<Player> players;
     public static GameMode mode;
     public static Winner winner;
+    public int diceNumberPerOneRoll;
 
     private float betsTimer;
     private float resultTimer; 
-    //private float delay = 0;
-    //private int intDelay = 0;
-    //private Vector3 spawnPosition1;
-    //private Vector3 spawnPosition2;
-
     private int rollCount = 0;
-    //private string diceName1;
-    //private string diceName2;
 
-    private void Start()
+    private static Controller instance = null;
+
+    public static Controller Instance
     {
-        spawnPosition1 = players[0].spawnPosition;
-        spawnPosition2 = spawnPoint2.position;
+        get
+        {
+            if (!instance) instance = new Controller();
+            return instance;
+        }
+    }
 
-        diceName1 = dicePrefab1.name;
-        diceName2 = dicePrefab2.name;
+    private void Awake()
+    {
+        if (instance)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void Update()
     {
-
-        //delay += Time.deltaTime;
-        //intDelay = (int)Mathf.Floor(delay);
-        if (mode == GameMode.Bets)
+        if (mode == GameMode.Game)
         {
-            foreach (Player player in players)
-                player.value = 0;
-            
-            ValuePlayer1 = 0;
-            ValuePlayer2 = 0;
-        }
-        else if (mode == GameMode.Game)
-        {
-            ValuePlayer1 = Dice.Value(diceName1);
-            ValuePlayer2 = Dice.Value(diceName2);
-
             if (rollCount == 0)
             {
-                Dice.Roll(diceName1, spawnPosition1, force1);
-                Dice.Roll(diceName1, spawnPosition1, force1);
+                players[0].Roll(diceNumberPerOneRoll);
                 rollCount++;
             }
-            else if (Dice.IsEndOfTurn(diceName1) && rollCount == 1)
+            else if (players[0].IsDiceStopped() && rollCount == 1)
             {
-                Dice.Roll(diceName2, spawnPosition2, force2);
-                Dice.Roll(diceName2, spawnPosition2, force2);
+                players[1].Roll(diceNumberPerOneRoll);
                 rollCount++;
             }
-            else if (Dice.IsEndOfTurn(diceName2) && rollCount == 2)
+            else if (players[1].IsDiceStopped() && rollCount == 2)
             {
-                EndGame();                
+                ShowResult();                
                 rollCount = 0;
             }           
         }
@@ -92,9 +72,9 @@ public class Controller : MonoBehaviour
             winner = Winner.Draw;
     }
 
-    public void EndGame()
+    public void ShowResult()
     {
-        HUD.Instance.AddNewResult(ValuePlayer1, ValuePlayer2);
+        HUD.Instance.AddNewResult(players[0].value, players[1].value);
         HUD.Instance.ShowResultWindow();
     }
 

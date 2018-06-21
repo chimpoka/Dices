@@ -16,17 +16,20 @@ public class HUD : MonoBehaviour
         }
     }
 
+    public int maxResultsInTable = 10;
 
-    public Text valuePlayer1;
-    public Text valuePlayer2;
+    public Text textValuePlayer1;
+    public Text textValuePlayer2;
 
     public GameObject startWindow;
     public GameObject betsWindow;
     public GameObject resultWindow;
     public GameObject mainWindow;
 
-    public Text betsStartTimer;
-    public Text resultStartTimer;
+    public InputField betsStartTimer;
+    public InputField resultStartTimer;
+   // public Text betsStartTimer;
+   //  public Text resultStartTimer;
     public Text betsTime;
     public Text resultTime;
 
@@ -69,8 +72,8 @@ public class HUD : MonoBehaviour
 
 	void Update ()
     {
-        valuePlayer1.text = Controller.ValuePlayer1.ToString();
-        valuePlayer2.text = Controller.ValuePlayer2.ToString();
+        textValuePlayer1.text = Controller.Instance.players[0].value.ToString();
+        textValuePlayer2.text = Controller.Instance.players[1].value.ToString();
 
         if (Controller.mode == GameMode.Bets)
         {
@@ -98,10 +101,22 @@ public class HUD : MonoBehaviour
 
     public void onReadyClick()
     {
-        startWindowAnimator.SetBool("Enable", false);
-        mainWindowAnimator.SetBool("Enable", true);
+        if (betsStartTimer.text != "" && resultStartTimer.text != "")
+        {
+            startWindowAnimator.SetBool("Enable", false);
+            mainWindowAnimator.SetBool("Enable", true);
+            ShowBetsWindow();
+        }              
+    }
 
-        ShowBetsWindow();     
+    public void onEndEditTimer(InputField timer)
+    {
+        int value;
+        if (int.TryParse(timer.text, out value) == false || value < 0)
+        {           
+            timer.text = "";
+        }
+            
     }
 
     public void ShowBetsWindow()
@@ -131,6 +146,14 @@ public class HUD : MonoBehaviour
 
     public void AddNewResult(int valuePlayer1, int valuePlayer2)
     {
+        Transform[] elements = resultTable.GetComponentsInChildren<Transform>();
+        foreach (Transform element in elements)
+        {
+            if (element.GetSiblingIndex() == maxResultsInTable - 1)
+                Destroy(element.gameObject);
+        }
+
+
         Controller.FindWinner(valuePlayer1, valuePlayer2);
 
         GameObject result = Instantiate(Resources.Load("Prefabs/Result") as GameObject, resultTable);
@@ -159,7 +182,8 @@ public class HUD : MonoBehaviour
         }
 
       //  result.transform.parent = resultTable;
-        result.transform.SetSiblingIndex(0);
+        result.transform.SetAsFirstSibling();
+        
     }
 
 

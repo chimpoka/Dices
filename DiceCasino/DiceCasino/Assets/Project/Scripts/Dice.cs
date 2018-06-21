@@ -1,83 +1,42 @@
-/**
- * Copyright (c) 2010-2015, WyrmTale Games and Game Components
- * All rights reserved.
- * http://www.wyrmtale.com
- *
- * THIS SOFTWARE IS PROVIDED BY WYRMTALE GAMES AND GAME COMPONENTS 'AS IS' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL WYRMTALE GAMES AND GAME COMPONENTS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// This dice dupporting class has some 'static' methods to help you throwning dice
-///  and getting the rolling dice count, value or rolling state (asString)
-/// </summary>
 public class Dice : MonoBehaviour {	
 	
-	//------------------------------------------------------------------------------------------------------------------------------
-	// public attributes
-	//------------------------------------------------------------------------------------------------------------------------------
 
-	// constants for checking mouse button input
-	public const int MOUSE_LEFT_BUTTON = 0;
-	public const int MOUSE_RIGHT_BUTTON = 1;
-	public const int MOUSE_MIDDLE_BUTTON = 2;
 
-	// rollSpeed determines how many seconds pass between rolling the single dice
+    // Задержка перед броском после создания кубика
     public float rollSpeed = 0.25F;
-	
-	// rolling = true when there are dice still rolling, rolling is checked using rigidBody.velocity and rigidBody.angularVelocity
+
+    // Определяет, движется ли кубик или остановился, используя rigidBody.velocity и rigidBody.angularVelocity
     public static bool rolling = true;
 
-	//------------------------------------------------------------------------------------------------------------------------------
-	// protected and private attributes
-	//------------------------------------------------------------------------------------------------------------------------------
-
-	// keep rolling time to determine when dice to be rolled, have to be instantiated
-    protected float rollTime = 0;
+    // Переменная для подсчета задержки через Time.deltaTime
+    private float rollTime = 0;
 	
-	// material cache
-	private static ArrayList matNames = new ArrayList();
-	private static ArrayList materials = new ArrayList();
-	// reference to the dice that have to be rolled
+	// Массив кубиков, готовых к броску
     private static ArrayList rollQueue = new ArrayList();
-	// reference to all dice, created by Dice.Roll
+	// Массив всех кубиков, созданных через Dice.Roll()
 	private static ArrayList allDice = new ArrayList();
-	// reference to the dice that are rolling
+	// Массив кубиков, которые уже брошены, но еще не остановились
     private static ArrayList rollingDice = new ArrayList();
 
-	//------------------------------------------------------------------------------------------------------------------------------
-	// public methods
-	//------------------------------------------------------------------------------------------------------------------------------	
+
 		
-	/// <summary>
-	/// This method will create/instance a prefab at a specific position with a specific rotation and a specific scale and assign a material
-	/// </summary>
+	// Создает кубик из префаба
 	public static GameObject prefab(string name, Vector3 position, Vector3 rotation, Vector3 scale/*, string mat*/) 
 	{		
-		// load the prefab from Resources
+		// Загрузка префаба из ресурсов
         Object pf = Resources.Load("Prefabs/" + name);
 		if (pf!=null)
 		{
-			// the prefab was found so create an instance for it.
 			GameObject inst = (GameObject) GameObject.Instantiate( pf , Vector3.zero, Quaternion.identity);
 			if (inst!=null)
 			{
-				// the instance could be created so set material, position, rotation and scale.
-				//if (mat!="") inst.GetComponent<Renderer>().material = material(mat);
 				inst.transform.position = position;
 				inst.transform.Rotate(rotation);
 				inst.transform.localScale = scale;
-				// return the created instance (GameObject)
+
 				return inst;
 			}
 		}
@@ -85,46 +44,6 @@ public class Dice : MonoBehaviour {
 			Debug.Log("Prefab "+name+" not found!");
 		return null;		
 	}	
-	
-	///// <summary>
-	///// This method will perform a quick lookup for a 'cached' material. If not found, the material will be loaded from the Resources
-	///// </summary>
-	//public static Material material(string matName)
-	//{
-	//	Material mat = null;
-	//	// check if material is cached
-	//	int idx = matNames.IndexOf(matName);
-	//	if (idx<0)
-	//	{
-	//		//  not cached so load it from Resources			
-	//		string[] a = matName.Split('-');
-	//		if (a.Length>1)
-	//		{
-	//			a[0] = a[0].ToLower();
-	//			if (a[0].IndexOf("d")==0)
-	//				mat = (Material) Resources.Load("Materials/"+a[0]+"/"+matName);
-	//		}			
-	//		if (mat==null) mat = (Material) Resources.Load("Materials/"+matName);
-	//		if (mat!=null)
-	//		{
-	//			// add material to cache
-	//			matNames.Add(matName);
-	//			materials.Add(mat);			
-	//		}
-	//	}
-	//	else
-	//		mat = (Material) materials[idx];
-	//	// return material - null if not found
-	//	return mat;		
-	//}
-	
-	/// <summary>
-	/// Log a text to the console
-	/// </summary>
-	//public static void debug(string txt)
-	//{
-	//	Debug.Log(txt);
-	//}		
 	
 	/// <summary>
 	/// Roll one or more dice with a specific material from a spawnPoint and give it a specific force.
@@ -199,7 +118,7 @@ public class Dice : MonoBehaviour {
         return v;
     }
 
-    public static bool IsEndOfTurn(string dieType)
+    public static bool IsDiceStopped(string dieType)
     {
         if (allDice.Count == 0)
             return false;
