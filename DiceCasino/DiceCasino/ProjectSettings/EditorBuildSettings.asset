@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Dice/scenes/Demo/demo.unity
-    guid: 00000000000000000000000000000000
+    path: Assets/Project/Scenes/Game.unity
+    guid: 1fdc7cbea82cd0e4aae10ccb251f9e67
