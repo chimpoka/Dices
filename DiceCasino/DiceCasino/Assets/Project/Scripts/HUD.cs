@@ -209,6 +209,9 @@ public class HUD : MonoBehaviour
         result.transform.SetAsFirstSibling();
     }
 
-
+    public void onExitClick()
+    {
+        Application.Quit();
+    }
 
 }
